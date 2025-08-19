@@ -228,6 +228,5 @@ Example response (abridged):
 
 ---
 
-## License
-
-MIT (or your preferred license).
+## Dependencies
+[jmccrohan/pysolarmanv5](https://github.com/jmccrohan/pysolarmanv5/tree/main)
