@@ -1,0 +1,468 @@
+# deye-modbus-registers.yaml
+# Schema:
+#  defaults: applied to every register unless overridden
+#  registers: list of register specs
+# Fields:
+#  - id: unique id
+#  - address: Modbus register (start)
+#  - count: number of 16-bit regs (1=16-bit, 2=32-bit)
+#  - function: holding | input     (default: holding)
+#  - type: uint16 | int16 | uint32 | int32
+#  - byte_order: AB | ABCD | CDAB | DCBA (for count>1; Deye 32-bit often CDAB)
+#  - multiply: scale (e.g., 0.1, 0.01)
+#  - offset: additive after multiply (e.g., -100 for temps)
+#  - measurement: output measurement
+#  - field: output field name
+
+defaults:
+  function: holding
+  byte_order: AB
+  multiply: 1.0
+  offset: 0.0
+
+registers:
+  # ----- BATTERY -----
+  - id: deye_battery_voltage
+    address: 587
+    type: uint16
+    multiply: 0.01
+    measurement: deye_battery
+    field: battery_voltage_v
+
+  - id: deye_battery_output_current
+    address: 591
+    type: int16
+    multiply: 0.01
+    measurement: deye_battery
+    field: battery_output_current_a
+
+  - id: deye_battery_output_power
+    address: 590
+    type: int16
+    multiply: 1.0
+    measurement: deye_battery
+    field: battery_output_power_w
+
+  - id: deye_battery_soc
+    address: 588
+    type: uint16
+    multiply: 1.0
+    measurement: deye_battery
+    field: battery_soc_percent
+
+  - id: deye_battery_temperature
+    address: 586
+    type: uint16
+    multiply: 0.1
+    offset: -100.0
+    measurement: deye_battery
+    field: battery_temperature_c
+
+  # ----- PV -----
+  - id: deye_pv1_power
+    address: 672
+    type: uint16
+    multiply: 1.0
+    measurement: deye_pv
+    field: pv1_power_w
+
+  - id: deye_pv2_power
+    address: 673
+    type: uint16
+    multiply: 1.0
+    measurement: deye_pv
+    field: pv2_power_w
+
+  - id: deye_pv1_voltage
+    address: 676
+    type: uint16
+    multiply: 0.1
+    measurement: deye_pv
+    field: pv1_voltage_v
+
+  - id: deye_pv1_current
+    address: 677
+    type: uint16
+    multiply: 0.1
+    measurement: deye_pv
+    field: pv1_current_a
+
+  - id: deye_pv2_voltage
+    address: 678
+    type: uint16
+    multiply: 0.1
+    measurement: deye_pv
+    field: pv2_voltage_v
+
+  - id: deye_pv2_current
+    address: 679
+    type: uint16
+    multiply: 0.1
+    measurement: deye_pv
+    field: pv2_current_a
+
+  # ----- GRID (internal totals & per-phase) -----
+  - id: deye_grid_total_power
+    address: 625
+    type: int16
+    multiply: 1.0
+    measurement: deye_grid
+    field: grid_total_power_w
+
+  - id: deye_grid_l1_voltage
+    address: 598
+    type: uint16
+    multiply: 0.1
+    measurement: deye_grid
+    field: grid_l1_voltage_v
+
+  - id: deye_grid_l2_voltage
+    address: 599
+    type: uint16
+    multiply: 0.1
+    measurement: deye_grid
+    field: grid_l2_voltage_v
+
+  - id: deye_grid_l3_voltage
+    address: 600
+    type: uint16
+    multiply: 0.1
+    measurement: deye_grid
+    field: grid_l3_voltage_v
+
+  - id: deye_grid_l1_current
+    address: 630
+    type: int16
+    multiply: 0.01
+    measurement: deye_grid
+    field: grid_l1_current_a
+
+  - id: deye_grid_l2_current
+    address: 631
+    type: int16
+    multiply: 0.01
+    measurement: deye_grid
+    field: grid_l2_current_a
+
+  - id: deye_grid_l3_current
+    address: 632
+    type: int16
+    multiply: 0.01
+    measurement: deye_grid
+    field: grid_l3_current_a
+
+  # ----- INVERTER -----
+  - id: deye_inverter_frequency
+    address: 638
+    type: uint16
+    multiply: 0.01
+    measurement: deye_inverter
+    field: inverter_frequency_hz
+
+  - id: deye_heat_sink_temperature
+    address: 541
+    type: int16
+    multiply: 0.1
+    offset: -100.0
+    measurement: deye_inverter
+    field: heat_sink_temp_c
+
+  # ----- ENERGY (DAILY 16-bit, multiply=0.1) -----
+  - id: deye_daily_energy_bought
+    address: 520
+    type: uint16
+    multiply: 0.1
+    measurement: deye_energy
+    field: daily_energy_bought_kwh
+
+  - id: deye_daily_energy_sold
+    address: 521
+    type: uint16
+    multiply: 0.1
+    measurement: deye_energy
+    field: daily_energy_sold_kwh
+
+  - id: deye_daily_battery_charge
+    address: 514
+    type: uint16
+    multiply: 0.1
+    measurement: deye_energy
+    field: daily_battery_charge_kwh
+
+  - id: deye_daily_battery_discharge
+    address: 515
+    type: uint16
+    multiply: 0.1
+    measurement: deye_energy
+    field: daily_battery_discharge_kwh
+
+  - id: deye_daily_load_consumption
+    address: 526
+    type: uint16
+    multiply: 0.1
+    measurement: deye_energy
+    field: daily_load_consumption_kwh
+
+  - id: deye_daily_production
+    address: 529
+    type: uint16
+    multiply: 0.1
+    measurement: deye_energy
+    field: daily_production_kwh
+
+  - id: deye_daily_pv1_production
+    address: 530
+    type: uint16
+    multiply: 0.1
+    measurement: deye_energy
+    field: daily_pv1_production_kwh
+
+  - id: deye_daily_pv2_production
+    address: 531
+    type: uint16
+    multiply: 0.1
+    measurement: deye_energy
+    field: daily_pv2_production_kwh
+
+  # ----- ENERGY TODAY (single 16-bit) -----
+  - id: deye_power_generation_today
+    address: 501
+    type: int16
+    multiply: 0.1
+    measurement: deye_energy
+    field: power_generation_today_kwh
+
+  # ----- ENERGY TOTALS (32-bit, CDAB, multiply=0.1) -----
+  - id: deye_battery_total_charge
+    address: 516
+    count: 2
+    type: uint32
+    byte_order: CDAB
+    multiply: 0.1
+    measurement: deye_energy
+    field: battery_total_charge_kwh
+
+  - id: deye_battery_total_discharge
+    address: 518
+    count: 2
+    type: uint32
+    byte_order: CDAB
+    multiply: 0.1
+    measurement: deye_energy
+    field: battery_total_discharge_kwh
+
+  - id: deye_total_energy_bought
+    address: 522
+    count: 2
+    type: uint32
+    byte_order: CDAB
+    multiply: 0.1
+    measurement: deye_energy
+    field: total_energy_bought_kwh
+
+  - id: deye_total_energy_sold
+    address: 524
+    count: 2
+    type: uint32
+    byte_order: CDAB
+    multiply: 0.1
+    measurement: deye_energy
+    field: total_energy_sold_kwh
+
+  - id: deye_total_consumption
+    address: 527
+    count: 2
+    type: uint32
+    byte_order: CDAB
+    multiply: 0.1
+    measurement: deye_energy
+    field: total_consumption_kwh
+
+  - id: deye_total_pv_production
+    address: 534
+    count: 2
+    type: uint32
+    byte_order: CDAB
+    multiply: 0.1
+    measurement: deye_energy
+    field: total_pv_production_kwh
+
+  # ----- INVERTER (status & faults) -----
+  - id: deye_failure_status_comm_board
+    address: 548
+    type: uint16
+    multiply: 1.0
+    measurement: deye_inverter
+    field: failure_status_comm_board
+
+  - id: deye_warning_1
+    address: 553
+    type: uint16
+    multiply: 1.0
+    measurement: deye_inverter
+    field: warning_1
+
+  - id: deye_warning_2
+    address: 554
+    type: uint16
+    multiply: 1.0
+    measurement: deye_inverter
+    field: warning_2
+
+  - id: deye_error_1
+    address: 555
+    type: uint16
+    multiply: 1.0
+    measurement: deye_inverter
+    field: error_1
+
+  - id: deye_error_2
+    address: 556
+    type: uint16
+    multiply: 1.0
+    measurement: deye_inverter
+    field: error_2
+
+  - id: deye_error_3
+    address: 557
+    type: uint16
+    multiply: 1.0
+    measurement: deye_inverter
+    field: error_3
+
+  - id: deye_error_4
+    address: 558
+    type: uint16
+    multiply: 1.0
+    measurement: deye_inverter
+    field: error_4
+
+  - id: deye_running_status_code
+    address: 500
+    type: uint16
+    multiply: 1.0
+    measurement: deye_inverter
+    field: running_status_code
+
+  # ----- GENERATOR -----
+  - id: deye_gen_l1_power_w
+    address: 664
+    type: int16
+    multiply: 1.0
+    measurement: deye_gen
+    field: gen_l1_power_w
+
+  - id: deye_gen_l2_power_w
+    address: 665
+    type: int16
+    multiply: 1.0
+    measurement: deye_gen
+    field: gen_l2_power_w
+
+  - id: deye_gen_l3_power_w
+    address: 666
+    type: int16
+    multiply: 1.0
+    measurement: deye_gen
+    field: gen_l3_power_w
+
+  - id: deye_gen_total_power_w
+    address: 667
+    type: int16
+    multiply: 1.0
+    measurement: deye_gen
+    field: gen_total_power_w
+
+  # ----- GRID (external) -----
+  - id: deye_grid_external_l1_power_w
+    address: 616
+    type: int16
+    multiply: 1.0
+    measurement: deye_grid
+    field: grid_external_l1_power_w
+
+  - id: deye_grid_external_l2_power_w
+    address: 617
+    type: int16
+    multiply: 1.0
+    measurement: deye_grid
+    field: grid_external_l2_power_w
+
+  - id: deye_grid_external_l3_power_w
+    address: 618
+    type: int16
+    multiply: 1.0
+    measurement: deye_grid
+    field: grid_external_l3_power_w
+
+  - id: deye_grid_external_total_power_w
+    address: 619
+    type: int16
+    multiply: 1.0
+    measurement: deye_grid
+    field: grid_external_total_power_w
+
+  # ----- GRID (internal measured powers) -----
+  - id: deye_grid_internal_l1_power_w
+    address: 604
+    type: int16
+    multiply: 1.0
+    measurement: deye_grid_internal
+    field: grid_internal_l1_power_w
+
+  - id: deye_grid_internal_l2_power_w
+    address: 605
+    type: int16
+    multiply: 1.0
+    measurement: deye_grid_internal
+    field: grid_internal_l2_power_w
+
+  - id: deye_grid_internal_l3_power_w
+    address: 606
+    type: int16
+    multiply: 1.0
+    measurement: deye_grid_internal
+    field: grid_internal_l3_power_w
+
+  - id: deye_grid_internal_total_power_w
+    address: 607
+    type: int16
+    multiply: 1.0
+    measurement: deye_grid_internal
+    field: grid_internal_total_power_w
+
+  # ----- LOAD -----
+  - id: deye_load_l1_power_w
+    address: 650
+    type: int16
+    multiply: 1.0
+    measurement: deye_load
+    field: load_l1_power_w
+
+  - id: deye_load_l2_power_w
+    address: 651
+    type: int16
+    multiply: 1.0
+    measurement: deye_load
+    field: load_l2_power_w
+
+  - id: deye_load_l3_power_w
+    address: 652
+    type: int16
+    multiply: 1.0
+    measurement: deye_load
+    field: load_l3_power_w
+
+  - id: deye_load_total_power_w
+    address: 653
+    type: int16
+    multiply: 1.0
+    measurement: deye_load
+    field: load_total_power_w
+
+  - id: deye_load_frequency_hz
+    address: 655
+    type: uint16
+    multiply: 0.01
+    measurement: deye_load
+    field: load_frequency_hz
