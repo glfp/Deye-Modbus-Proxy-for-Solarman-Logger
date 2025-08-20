@@ -1,4 +1,4 @@
-# Deye-Modbus-Proxy-for-Solarman-Logger
+# Deye Modbus Proxy for Solarman Logger
 
 A tiny HTTP bridge that polls a Deye/Solarman logger over Modbus (via TCP/8899) and exposes the data as a simple JSON endpoint you can scrape from Telegraf, Grafana, or anything else.
 It talks to the logger with `pysolarmanv5`, serves an HTTP API with `aiohttp`, and reads a **YAML register map** so you can define exactly which registers to fetch and how to scale them. Values are returned as floats and rounded (default: **2 decimals**).
